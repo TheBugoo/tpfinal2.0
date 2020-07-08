@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novedades</title>
+  </head>
+
+  <body class="pt-5">
+    <div class="container">
+      <div id="printJS-form" *ngIf="loginService.adm || loginService.adm1">
+        <br />
+        <div class="col-md-12">
+          <h2>
+            <b style="margin-left: 30%; color: #fff;">Novedades Pendientes</b>
+            <button
+              data-toggle="modal"
+              data-target="#exampleModal"
+              type="button"
+              class="btn btn-outline-info"
+              style="
+                margin-left: 3%;
+                width: 5%;
+                height: 40px;
+                background-color: rgba(255, 255, 255, 0.89);
+              "
+            >
+              <i class="fas fa-cog"></i>
+            </button>
+          </h2>
+
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="exampleModal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Filtros</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="defaultCheck1"
+                    style="margin-left: 20px;"
+                    [(ngModel)]="filtro1"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="filtro1"
+                    style="margin-left: 40px;"
+                  >
+                    Ver todas las novedades.
+                  </label>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-info"
+                    data-dismiss="modal"
+                    (click)="filtrar()"
+                  >
+                    Filtrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br />
+        <div *ngFor="let item of novedades">
+          <div class="card border-info mb-3" style="width: 100%;">
+            <div class="card-header" style="background-color: white;">
+              <h3><b class="text-info">Novedad</b></h3>
+            </div>
+            <div class="card-body">
+              <label>
+                <h4><b>Usuario:</b> {{ item.usuario.usuario }}</h4>
+              </label>
+              <br />
+              <label>
+                <h4><b>Texto: </b>{{ item.texto }}</h4>
+              </label>
+              <br />
+              <div *ngIf="item.estado == 'Pendiente'">
+                <button
+                  type="submit"
+                  class="btn btn-outline-info"
+                  style="margin-left: 70%; width: 30%;"
+                  (click)="modificarNovedad(item)"
+                >
+                  Procesar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="Propietario"
+        *ngIf="loginService.userLoggedIn && loginService.inq"
+      >
+        <div class="row">
+          <div class="col-md-12">
+            <form #formNovedad="ngForm" (ngSubmit)="onSubmit(formNovedad)">
+              <div class="formgroup row col-md-12">
+                <div
+                  class="formgroup row col-md-12 col-sm-12"
+                  style="margin-top: 5px;"
+                >
+                  <div style="width: 35%;">
+                    <h3 style="margin-bottom: 20px;">
+                      <b> Texto de Novedad:</b>
+                    </h3>
+                  </div>
+                  <textarea
+                    placeholder="Escribe texto de Novedad"
+                    minlength="15"
+                    class="form-control"
+                    name="texto"
+                    rows="5"
+                    required
+                    #texto="ngModel"
+                    [(ngModel)]="novedad.texto"
+                    style="width: 100%; margin-bottom: 20px;"
+                  ></textarea>
+
+                  <div
+                    *ngIf="texto.invalid && (texto.dirty || texto.touched)"
+                    class="alert alert-danger"
+                    style="width: 100%;"
+                  >
+                    <div
+                      *ngIf="texto.errors.required"
+                      style="
+                        justify-content: center;
+                        margin-left: 70px;
+                        width: 100%;
+                      "
+                    >
+                      Texto de novedad es requerido.
+                    </div>
+                    <div
+                      *ngIf="texto.errors.minlength"
+                      style="
+                        justify-content: center;
+                        margin-left: 70px;
+                        width: 100%;
+                      "
+                    >
+                      El texto minimo de novedad es de 20 caracteres.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" style="margin-left: 1px;">
+                <button
+                  [disabled]="formNovedad.invalid"
+                  (click)="guardarNovedad(); onSubmit(formNovedad)"
+                  type="submit button"
+                  class="btn btn-primary"
+                  style="margin: 10px 10px 10px 0px; width: 25%;"
+                >
+                  <i
+                    class="fas fa-paper-plane"
+                    style="margin-right: 5px; color: white;"
+                  ></i>
+                  Enviar Novedad
+                </button>
+
+                <input
+                  type="reset"
+                  class="btn btn-secondary"
+                  style="margin: 10px 10px 10px 10px;"
+                  value="limpiar"
+                />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="col-md-12 fixed-bottom"
+      id="impresion"
+      align="right"
+      *ngIf="loginService.userLoggedIn && loginService.adm"
+    >
+      <button class="btn btn-primary ml-2 mr-2 mb-3" (click)="printJS()">
+        Imprimir
+      </button>
+      <button class="btn btn-primary ml-2 mr-2 mb-3" (click)="generarPDF()">
+        Imprimir en PDF
+      </button>
+    </div>
+  </body>
+</html>
