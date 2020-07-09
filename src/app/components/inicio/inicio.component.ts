@@ -211,7 +211,7 @@ export class InicioComponent implements OnInit {
   }
   iniciarFb() {
     let initParams: InitParams = {
-      appId: '271912320576704',
+      appId: '323157292037311',
       autoLogAppEvents: true,
       xfbml: true,
       version: 'v7.0',
@@ -220,10 +220,10 @@ export class InicioComponent implements OnInit {
   }
   postFb() {
     var apiMethod: ApiMethod = 'post';
-    this.fb.api('100511871741836/feed', apiMethod, {
+    this.fb.api('100380025088381/feed', apiMethod, {
       message: this.mensaje,
       access_token:
-        'EAAD3TYVHLMABACNiDnHDb9one5yltEarjLEYDVjcDJIUtRKMTWkSuHZAWiKk3QQZAHk03t2OvRqN9XfgfIShf8WfquzSxDdvbfbLoQHzsFc883p2BQxahss2xgrs10yXTDSd1xFn3Q81uOeZAKBhAsgeZAwYUMs6K44Fm2FYtwbdgpk4L4HGVGbekgATa44cmmFcr7RvYAZDZD',
+        'EAAEl6OuZANL8BAByBdykxj4RnqO23iCm33tfNzwRSBIdLLL3uijFZCSoG2ZCjjVP9EyfhEG6UiHLCb3YstWmtBbiScCjLjZAoK5DqmiI5h1j3MZBeKzrBhRUJVx9zqHcFe5YHLpTsGTKlxt4zUIYzR2JHej3gDmqmPpBx7WzBMUl6DERO3LQpvxOkhpZBExBcZD',
     });
   }
   public cleanNoticia() {

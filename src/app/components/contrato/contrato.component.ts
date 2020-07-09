@@ -30,6 +30,8 @@ export class ContratoComponent implements OnInit {
   contador: number;
   validador: boolean;
 
+  val: boolean; // desc: Array<string>;
+
   constructor(
     private contratoService: ContratoService,
     private propietarioService: PropietarioService,
@@ -70,6 +72,20 @@ export class ContratoComponent implements OnInit {
       }
     );
   }
+  // obtenerTabla(){
+  //   this.contador=0;
+  //   for (let contrato of this.contratos){
+  //     console.log("entrou");
+  //     this.contador=this.contador+1;
+  //   }
+  //   if (this.contador > 0) {
+  //     this.tabla=true;
+  //     console.log(this.tabla);// array exists and is not empty
+  //   }
+  //   else{
+  //     this.tabla=false;
+  //   }
+  // }
   obtenerLocal() {
     //this.asistentes = this.asistenteService.getAsistente();
     this.locales = new Array<Local>();
@@ -87,6 +103,7 @@ export class ContratoComponent implements OnInit {
       }
     );
   }
+
   cargarModal(contrato: Contrato) {
     this.localesM = contrato.locales;
   }
@@ -97,7 +114,12 @@ export class ContratoComponent implements OnInit {
     this.contrato.locales.splice(index, 1);
     locall.alquilado = false;
     console.log(this.contrato.locales);
-    this.contrato.costoTotalAlq = this.contrato.costoTotalAlq - locall.costoMes;
+    if (this.contrato.costoTotalAlq - locall.costoMes >= 0) {
+      this.contrato.costoTotalAlq =
+        this.contrato.costoTotalAlq - locall.costoMes;
+    } else {
+      this.contrato.costoTotalAlq = 0;
+    }
     this.localService.updateLocal(locall).subscribe(
       (result) => {
         this._toastr.success('Local eliminado de la Lista', 'Exito');
@@ -108,15 +130,75 @@ export class ContratoComponent implements OnInit {
       }
     );
   }
+  // enviarContrato() {
+  //   this.validarIngreso();
+  //   this.contrato.fecha = new Date();
+  //   if(this.validador==true){
+  //   this.contratoService.addContrato(this.contrato).subscribe(
+  //     (result) => {
+  //       this._toastr.success("Contrato agregado","Exito");
+  //       this.obtenerContrato();
+  //       // this.obtenerTabla();
+  //     },
+  //     (error) => {
+  //       console.log("Error");
+  //     }
+  //   )
+  //   }
+  //   else
+  //   {
+  //     this._toastr.error("Error", "Debe llenar todos los campos para agregar un contrato")
+  //     this.contrato.locales.forEach(element => element.alquilado=false);
+  //   //con.locales.forEach(element => this.localService.updateLocal(element));
+  //     for (let local of this.contrato.locales){
+  //     console.log("entrou")
+  //     this.localService.updateLocal(local).subscribe(
+  //       (result) => {
+  //         this._toastr.success("Estado de local actualizado","Exito");
+  //         this.obtenerLocal();
+  //       },
+  //       (error) => {
+  //         console.log("Error");
+  //       }
+  //     );
+  //     }
+  //   }
+  //   this.contrato = new Contrato();
+  //   this.contrato.costoTotalAlq=0;
+  // }
 
   enviarContrato() {
     this.validarIngreso();
     this.contrato.fecha = new Date();
+    // for (let l of this.contrato.locales){
+    //   l.alquilado=true;
+    //   this.localService.updateLocal(l).subscribe(
+    //     (result) => {
+    //       this._toastr.success("Estado de local actualizado","Exito");
+    //       this.obtenerLocal();
+    //     },
+    //     (error) => {
+    //       console.log("Error");
+    //     }
+    //   );
+    //   }
     if (this.validador == true) {
+      for (let l of this.contrato.locales) {
+        l.alquilado = true;
+        this.localService.updateLocal(l).subscribe(
+          (result) => {
+            this._toastr.success('Estado de local actualizado', 'Exito');
+          },
+          (error) => {
+            console.log('Error');
+          }
+        );
+      }
       this.contratoService.addContrato(this.contrato).subscribe(
         (result) => {
           this._toastr.success('Contrato agregado', 'Exito');
           this.obtenerContrato();
+          this.obtenerLocal();
           // this.obtenerTabla();
         },
         (error) => {
@@ -130,27 +212,32 @@ export class ContratoComponent implements OnInit {
       );
       this.contrato.locales.forEach((element) => (element.alquilado = false));
       //con.locales.forEach(element => this.localService.updateLocal(element));
-      for (let local of this.contrato.locales) {
-        console.log('entrou');
-        this.localService.updateLocal(local).subscribe(
-          (result) => {
-            this._toastr.success('Estado de local actualizado', 'Exito');
-            this.obtenerLocal();
-          },
-          (error) => {
-            console.log('Error');
-          }
-        );
-      }
+      // for (let local of this.contrato.locales){
+      // console.log("entrou")
+      // this.localService.updateLocal(local).subscribe(
+      //   (result) => {
+      //     this._toastr.success("Estado de local actualizado","Exito");
+      //     this.obtenerLocal();
+      //   },
+      //   (error) => {
+      //     console.log("Error");
+      //   }
+      // );
+      // }
     }
     this.contrato = new Contrato();
     this.contrato.costoTotalAlq = 0;
   }
+
   guardarContrato() {
     this.contrato.fecha = new Date();
     this.contratoService.addContrato(this.contrato);
     this.contrato = new Contrato();
     this.obtenerContrato();
+  }
+  updateList() {
+    this.obtenerContrato();
+    this.obtenerLocal();
   }
   borrarContrato(con: Contrato) {
     console.log(con.locales);
@@ -168,6 +255,7 @@ export class ContratoComponent implements OnInit {
       );
     }
     this.contrato.costoTotalAlq = 0;
+    this.contrato.locales = new Array<Local>();
     this.contratoService.deleteContrato(con).subscribe(
       (result) => {
         this._toastr.success('Contrato Eliminado', 'Exito');
@@ -197,25 +285,65 @@ export class ContratoComponent implements OnInit {
       }
     );
   }
+  // guardarLocal() {
+  //   if (this.local.alquilado==false) {
+  //     this.contrato.locales.push(this.local);
+  //     this.local.alquilado=true;
+  //     console.log(this.local);
+  //     this.localService.updateLocal(this.local).subscribe(
+
+  //       (result) => {
+  //         this._toastr.success("Local Agregado","Exito");
+  //         this.obtenerLocal();
+
+  //       },
+  //       (error) => {
+  //         console.log("Error");
+
+  //       }
+  //     )
+  //     this.a= Number(this.contrato.costoTotalAlq);
+  //     this.contrato.costoTotalAlq=this.a+this.local.costoMes;
+  //     this.local=new Local();
+  //   }
+  //   else {
+  //     this._toastr.error("error", "El local ya esta alquilado")
+  //   }
+  // }
+
   guardarLocal() {
-    if (this.local.alquilado == false) {
-      this.contrato.locales.push(this.local);
-      this.local.alquilado = true;
-      console.log(this.local);
-      this.localService.updateLocal(this.local).subscribe(
-        (result) => {
-          this._toastr.success('Local Agregado', 'Exito');
-          this.obtenerLocal();
-        },
-        (error) => {
-          console.log('Error');
+    this.val = false;
+    if (this.contrato.locales.length != 0) {
+      for (let l of this.contrato.locales) {
+        if (this.local._id == l._id) {
+          this.val = true;
+          console.log('entrou');
         }
-      );
-      this.a = Number(this.contrato.costoTotalAlq);
-      this.contrato.costoTotalAlq = this.a + this.local.costoMes;
-      this.local = new Local();
+      }
+      if (this.val == false) {
+        if (this.local.superficie != null) {
+          this.contrato.locales.push(this.local);
+          this.a = Number(this.contrato.costoTotalAlq);
+          this.contrato.costoTotalAlq = this.a + this.local.costoMes;
+          this.local = new Local();
+          this._toastr.success('Local agregado', 'Exito');
+        } else {
+          this._toastr.error('error', 'Debe seleccionar un local');
+        }
+      } else {
+        this._toastr.error('error', 'El local ya esta agregado');
+      }
     } else {
-      this._toastr.error('error', 'El local ya esta alquilado');
+      if (this.local.superficie != null) {
+        this.contrato.locales.push(this.local);
+        this.a = Number(this.contrato.costoTotalAlq);
+        this.contrato.costoTotalAlq = this.a + this.local.costoMes;
+        this.local = new Local();
+        console.log('entroufora');
+        console.log(this.contrato.locales.length);
+      } else {
+        this._toastr.error('error', 'Debe seleccionar un local');
+      }
     }
   }
 
@@ -224,10 +352,22 @@ export class ContratoComponent implements OnInit {
     console.log(this.contrato.locales);
     this.contrato.fecha = new Date();
     if (this.validador == true) {
+      for (let l of this.contrato.locales) {
+        l.alquilado = true;
+        this.localService.updateLocal(l).subscribe(
+          (result) => {
+            this._toastr.success('Estado de local actualizado', 'Exito');
+          },
+          (error) => {
+            console.log('Error');
+          }
+        );
+      }
       this.contratoService.upDateMensaje(this.contrato).subscribe(
         (result) => {
           this._toastr.success('Contrato modificado', 'Exito');
           this.obtenerContrato();
+          this.obtenerLocal();
         },
         (error) => {
           console.log('Error');
@@ -238,20 +378,20 @@ export class ContratoComponent implements OnInit {
         'Error',
         'Debe llenar todos los campos para modificar un contrato'
       );
-      this.contrato.locales.forEach((element) => (element.alquilado = false));
-      //con.locales.forEach(element => this.localService.updateLocal(element));
-      for (let local of this.contrato.locales) {
-        console.log('entrou');
-        this.localService.updateLocal(local).subscribe(
-          (result) => {
-            this._toastr.success('Estado de local actualizado', 'Exito');
-            this.obtenerLocal();
-          },
-          (error) => {
-            console.log('Error');
-          }
-        );
-      }
+      //   this.contrato.locales.forEach(element => element.alquilado=false);
+      // //con.locales.forEach(element => this.localService.updateLocal(element));
+      //   for (let local of this.contrato.locales){
+      //   console.log("entrou")
+      //   this.localService.updateLocal(local).subscribe(
+      //     (result) => {
+      //       this._toastr.success("Estado de local actualizado","Exito");
+      //       this.obtenerLocal();
+      //     },
+      //     (error) => {
+      //       console.log("Error");
+      //     }
+      //   );
+      //   }
     }
     this.contrato = new Contrato();
     this.contrato.costoTotalAlq = 0;
@@ -259,6 +399,9 @@ export class ContratoComponent implements OnInit {
   }
   limpiarContrato() {
     this.contrato = new Contrato();
+  }
+  listarContratos() {
+    this.obtenerContrato();
   }
   elegirContrato(con: Contrato) {
     this.contrato = con;
@@ -273,6 +416,42 @@ export class ContratoComponent implements OnInit {
     }
     return true;
   }
+  //   chequearContratosFantasmas(){
+  //     for (let local of this.locales){
+  //       if(local.alquilado==true){
+  //         for (let contrato of this.contratos){
+  //           for (let locall of contrato.locales){
+  //             if (locall.descripcion==local.descripcion){
+
+  //           }
+  //       }
+  //     }
+  //   }
+  // }
+
+  //     //con.locales.forEach(element => this.localService.updateLocal(element));
+  //     for (let contrato of this.contratos){
+  //       for (let local of contrato.locales){
+  //         for (let locall of this.locales){
+  //             if(locall.alquilado==true&&local._id!=locall._id){
+  //               locall.alquilado=false;
+  //               console.log("entro")
+  //               this.localService.updateLocal(locall).subscribe(
+  //                 (result) => {
+  //                   this._toastr.success("Se eliminaron contratos fantasmas","Exito");
+  //                   this.obtenerLocal();
+  //                 },
+  //                 (error) => {
+  //                   console.log("Error");
+  //                 }
+  //               );
+  //             }
+  //         }
+  //       }
+  //     }
+
+  //     }
+
   onSubmit(form: NgForm) {
     form.resetForm();
   }

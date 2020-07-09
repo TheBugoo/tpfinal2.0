@@ -131,6 +131,7 @@ export class PropietarioComponent implements OnInit {
   onSubmit(form: NgForm) {
     form.resetForm();
   }
+
   ngOnInit(): void {}
 
   public printJS() {

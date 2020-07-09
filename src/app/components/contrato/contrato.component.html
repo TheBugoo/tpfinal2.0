@@ -70,92 +70,87 @@
                 </div> -->
           </div>
         </form>
-        <div>
-          <h5 style="margin-left: 10px;">Seleccion de locales</h5>
-          <table
-            style="
-              background-color: white;
-              color: black;
-              border-color: rgb(11, 37, 0);
-            "
-            class="table table-striped col-sm-12"
-            [mfData]="locales"
-            #mf="mfDataTable"
-            [mfRowsOnPage]="5"
+        <h5 style="margin-left: 10px;">Seleccion de locales</h5>
+        <table
+          style="
+            background-color: white;
+            color: black;
+            border-color: rgb(11, 37, 0);
+          "
+          class="table table-striped col-sm-12"
+          [mfData]="locales"
+          #mf="mfDataTable"
+          [mfRowsOnPage]="5"
+        >
+          <thead>
+            <tr>
+              <th style="width: 25%;">
+                <div style="width: 30%;">
+                  <label style="padding-left: 40%;"> Local :</label>
+                </div>
+                <select
+                  class="custom-select form-control"
+                  style="width: 50%;"
+                  name="prop"
+                  #idempresa="ngModel"
+                  [(ngModel)]="local"
+                  required
+                >
+                  <option *ngFor="let item of locales" [ngValue]="item">{{
+                    item.descripcion
+                  }}</option>
+                </select>
+              </th>
+              <th style="width: 25%;">
+                <button class="b2" style="width: 50%;" (click)="guardarLocal()">
+                  Agregar
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of contrato.locales">
+              <td>{{ item.superficie }}</td>
+              <td>{{ item.descripcion }}</td>
+              <td>{{ item.costoMes }}</td>
+              <td>
+                <button
+                  class="b2"
+                  style="width: 50%;"
+                  (click)="eliminarLocales(item)"
+                >
+                  Borrar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="row col-sm-12" style="padding-left: 150px;">
+          <button
+            type="submit"
+            class="b2"
+            style="margin-bottom: 10px; width: 30%;"
+            (click)="enviarContrato()"
           >
-            <thead>
-              <tr>
-                <th style="width: 25%;">
-                  <div style="width: 30%;">
-                    <label style="padding-left: 40%;"> Local :</label>
-                  </div>
-                  <select
-                    class="custom-select form-control"
-                    style="width: 50%;"
-                    name="prop"
-                    #idempresa="ngModel"
-                    [(ngModel)]="local"
-                    required
-                  >
-                    <option *ngFor="let item of locales" [ngValue]="item">{{
-                      item.descripcion
-                    }}</option>
-                  </select>
-                </th>
-                <th style="width: 25%;">
-                  <button
-                    class="b2"
-                    style="width: 50%;"
-                    (click)="guardarLocal()"
-                  >
-                    Agregar
-                  </button>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of contrato.locales">
-                <td>{{ item.superficie }}</td>
-                <td>{{ item.descripcion }}</td>
-                <td>{{ item.costoMes }}</td>
-                <td>
-                  <button
-                    class="b2"
-                    style="width: 50%;"
-                    (click)="eliminarLocales(item)"
-                  >
-                    Borrar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="row col-sm-12" style="padding-left: 150px;">
-            <button
-              type="submit"
-              class="b2"
-              style="margin-bottom: 10px; width: 30%;"
-              (click)="enviarContrato()"
-            >
-              Registrar
-            </button>
-            <button
-              type="submit"
-              class="b2"
-              style="margin-bottom: 10px; width: 30%;"
-              (click)="modificarContrato()"
-            >
-              Modificar
-            </button>
-            <input
-              style="margin-bottom: 10px; width: 30%;"
-              type="reset"
-              class="b2"
-              value="Limpiar"
-            />
-            <br />
-            <br />
-            <!-- <div class="formgroup row col-md-12 col-sm-12">
+            Registrar
+          </button>
+          <button
+            type="submit"
+            class="b2"
+            style="margin-bottom: 10px; width: 30%;"
+            (click)="modificarContrato()"
+          >
+            Modificar
+          </button>
+          <input
+            style="margin-bottom: 10px; width: 30%;"
+            type="reset"
+            class="b2"
+            value="Limpiar"
+          />
+          <br />
+          <br />
+          <!-- <div class="formgroup row col-md-12 col-sm-12">
             <div style="width: 30%;">
               <label style="padding-left: 40%;"> Local :</label>
             </div>
@@ -167,149 +162,146 @@
           <button type="submit" class="b2" style="margin-bottom: 10px; width: 30%;" (click)="guardarLocal()">
             Guardar
           </button> -->
-          </div>
         </div>
+      </div>
 
-        <br />
-        <div id="printJS-form">
-          <table
-            style="
-              background-color: white;
-              color: black;
-              border-color: rgb(11, 37, 0);
-            "
-            class="table table-striped col-sm-12"
-            [mfData]="contratos"
-            #mf="mfDataTable"
-            [mfRowsOnPage]="4"
-          >
-            <thead>
-              <tr>
-                <th style="width: 8%;">
-                  <mfDefaultSorter> Fecha </mfDefaultSorter>
-                </th>
-                <th style="width: 15%;">
-                  Propietario
-                </th>
-                <th style="width: 20%;">
-                  Locales
-                </th>
-                <th style="width: 15%;">
-                  Costo Total
-                </th>
-                <th style="width: 30%; padding-left: 70px;">
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of contratos">
-                <td>{{ item.fecha | date: "shortDate" }}</td>
-                <td>{{ item.propietario.apellido }}</td>
-                <td>
-                  <button
-                    class="b2"
-                    style="width: 50%;"
-                    data-toggle="modal"
-                    data-target="#exampleModal"
-                    (click)="cargarModal(item)"
-                  >
-                    Locales
-                  </button>
-                </td>
-                <td>{{ item.costoTotalAlq }}</td>
-                <td>
-                  <button
-                    class="b2"
-                    style="width: 50%;"
-                    (click)="elegirContrato(item)"
-                  >
-                    Seleccion
-                  </button>
-                  <button
-                    class="b2"
-                    style="width: 50%;"
-                    (click)="borrarContrato(item)"
-                  >
-                    Borrar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td>
-                  <mfBootstrapPaginator></mfBootstrapPaginator>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-        <div
-          class="modal fade"
-          id="exampleModal"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
+      <br />
+      <div id="printJS-form">
+        <table
+          style="
+            background-color: white;
+            color: black;
+            border-color: rgb(11, 37, 0);
+          "
+          class="table table-striped col-sm-12"
+          [mfData]="contratos"
+          #mf="mfDataTable"
+          [mfRowsOnPage]="4"
         >
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Locales</h5>
+          <thead>
+            <tr>
+              <th style="width: 8%;">
+                <mfDefaultSorter> Fecha </mfDefaultSorter>
+              </th>
+              <th style="width: 15%;">
+                Propietario
+              </th>
+              <th style="width: 20%;">
+                Locales
+              </th>
+              <th style="width: 15%;">
+                Costo Total
+              </th>
+              <th style="width: 30%; padding-left: 70px;">
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of contratos">
+              <td>{{ item.fecha | date: "shortDate" }}</td>
+              <td>{{ item.propietario.apellido }}</td>
+              <td>
                 <button
-                  type="button"
                   class="b2"
-                  data-dismiss="modal"
-                  aria-label="Close"
+                  style="width: 50%;"
+                  data-toggle="modal"
+                  data-target="#exampleModal"
+                  (click)="cargarModal(item)"
                 >
-                  <span aria-hidden="true">&times;</span>
+                  Locales
                 </button>
-              </div>
-              <div class="modal-body">
-                <table
-                  style="
-                    background-color: white;
-                    color: black;
-                    border-color: rgb(11, 37, 0);
-                  "
-                  class="table table-striped col-sm-12"
-                  [mfData]="contratos"
-                  #mf="mfDataTable"
-                  [mfRowsOnPage]="3"
+              </td>
+              <td>{{ item.costoTotalAlq }}</td>
+              <td>
+                <button
+                  class="b2"
+                  style="width: 50%;"
+                  (click)="elegirContrato(item)"
                 >
-                  <thead>
-                    <tr>
-                      <th style="width: 15%;">
-                        Superficie
-                      </th>
-                      <th style="width: 20%;">
-                        Descripcion
-                      </th>
-                      <th style="width: 15%;">
-                        Costo por mes
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let item of localesM">
-                      <td>{{ item.superficie }}</td>
-                      <td>{{ item.descripcion }}</td>
-                      <td>{{ item.costoMes }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="b2" data-dismiss="modal">
-                  Cerrar
+                  Seleccion
                 </button>
-              </div>
+                <button
+                  class="b2"
+                  style="width: 50%;"
+                  (click)="borrarContrato(item)"
+                >
+                  Borrar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                <mfBootstrapPaginator></mfBootstrapPaginator>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Locales</h5>
+              <button
+                type="button"
+                class="b2"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <table
+                style="
+                  background-color: white;
+                  color: black;
+                  border-color: rgb(11, 37, 0);
+                "
+                class="table table-striped col-sm-12"
+                [mfData]="contratos"
+                #mf="mfDataTable"
+                [mfRowsOnPage]="3"
+              >
+                <thead>
+                  <tr>
+                    <th style="width: 15%;">
+                      Superficie
+                    </th>
+                    <th style="width: 20%;">
+                      Descripcion
+                    </th>
+                    <th style="width: 15%;">
+                      Costo por mes
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of localesM">
+                    <td>{{ item.superficie }}</td>
+                    <td>{{ item.descripcion }}</td>
+                    <td>{{ item.costoMes }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="b2" data-dismiss="modal">
+                Cerrar
+              </button>
             </div>
           </div>
         </div>
-        <br />
-        <br />
       </div>
     </div>
     <br />
